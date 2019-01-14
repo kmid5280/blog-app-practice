@@ -9,13 +9,22 @@ const jsonParser = bodyParser.json()
 const app = express()
 
 app.use(morgan('common'))
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE')
+    if (req.method === 'OPTIONS') {
+        return res.send(204)
+    }
+    next();
+})
 
-app.get('/blog-posts', (req, res) => {
+app.get('/blog-app-practice', (req, res) => {
     res.json(BlogPosts.get())
 })
 
-app.post('/blog-posts', jsonParser, (req, res) => {
-    const requiredFields = ['title', 'content', 'author'];
+app.post('/blog-app-practice', jsonParser, (req, res) => {
+    const requiredFields = ['title', 'content'];
     for (i=0; i<requiredFields.length; i++) {
         const field = requiredFields[i];
         if (!(field in req.body)) {
@@ -24,17 +33,17 @@ app.post('/blog-posts', jsonParser, (req, res) => {
             return res.status(400).send(message)
         }
     }
-    const post = BlogPosts.create(req.body.title, req.body.content, req.body.author, req.body.publishDate)
+    const post = BlogPosts.create(req.body.title, req.body.content, req.body.publishDate)
     res.status(201).json(post)
 })
 
-app.delete('/blog-posts/:id', (req, res) => {
+app.delete('/blog-app-practice/:id', (req, res) => {
     BlogPosts.delete(req.params.id)
     console.log(`Deleted blog post ${req.params.id}`)
     res.status(204).end()
 })
 
-app.put('/blog-posts/:id', jsonParser, (req, res) => {
+app.put('/blog-app-practice/:id', jsonParser, (req, res) => {
     console.log(`Updating blog post ${req.params.id}`)
     
     BlogPosts.update({
