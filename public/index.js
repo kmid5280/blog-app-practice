@@ -4,7 +4,7 @@ let blogPost = ''
 function getBlogPosts() {
     console.log('running getblogposts')
     $.ajax({
-        //url: 
+        url: '/blog-app-practice',
         method: "GET",
         dataType: "json"
     })
